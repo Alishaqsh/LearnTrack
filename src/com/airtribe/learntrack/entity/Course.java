@@ -1,5 +1,7 @@
 package com.airtribe.learntrack.entity;
 
+import com.airtribe.learntrack.exception.InvalidInputException;
+
 /**
  * Course entity class
  * Represents a course with basic information
@@ -11,36 +13,38 @@ public class Course {
     private int durationInWeeks;
     private boolean active;
 
-    // Default constructor
     public Course() {
         this.active = true;
     }
 
-    // Parameterized constructor
-    public Course(int id, String courseName, String description, int durationInWeeks, boolean active) {
-        this.id = id;
+    public Course(String courseName, String description, int durationInWeeks) {
         this.courseName = courseName;
         this.description = description;
-        this.durationInWeeks = durationInWeeks;
-        this.active = active;
-    }
-
-    // Constructor overloading - without description
-    public Course(int id, String courseName, int durationInWeeks) {
-        this.id = id;
-        this.courseName = courseName;
-        this.description = "";
-        this.durationInWeeks = durationInWeeks;
+        setDurationInWeeks(durationInWeeks);
         this.active = true;
     }
 
-    // Getters and Setters (Encapsulation)
-    public int getId() {
-        return id;
+    public Course(String courseName, int durationInWeeks) {
+        this.courseName = courseName;
+        this.description = "";
+        setDurationInWeeks(durationInWeeks);
+        this.active = true;
     }
 
-    public void setId(int id) {
+    private Course(int id, String courseName, String description, int durationInWeeks, boolean active) {
         this.id = id;
+        this.courseName = courseName;
+        this.description = description;
+        setDurationInWeeks(durationInWeeks);
+        this.active = active;
+    }
+
+    public static Course create(int id, String courseName, String description, int durationInWeeks, boolean active) {
+        return new Course(id, courseName, description, durationInWeeks, active);
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getCourseName() {
@@ -64,6 +68,9 @@ public class Course {
     }
 
     public void setDurationInWeeks(int durationInWeeks) {
+        if (durationInWeeks <= 0) {
+            throw new InvalidInputException("Duration must be a positive number of weeks.");
+        }
         this.durationInWeeks = durationInWeeks;
     }
 

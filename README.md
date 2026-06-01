@@ -228,13 +228,13 @@ compile.bat
 #### Option 2: Manual Compilation
 ```bash
 cd LearnTrack
-javac -d bin -sourcepath src src/com/airtribe/learntrack/Main.java
+javac -d bin -sourcepath src src/com/airtribe/learntrack/ui/Main.java
 ```
 
 ### Running the Application
 
 ```bash
-java -cp bin com.airtribe.learntrack.Main
+java -cp bin com.airtribe.learntrack.ui.Main
 ```
 
 The console menu will appear with options to manage students, courses, and enrollments.

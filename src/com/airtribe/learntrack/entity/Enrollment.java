@@ -1,5 +1,6 @@
 package com.airtribe.learntrack.entity;
 
+import com.airtribe.learntrack.exception.InvalidInputException;
 import java.util.Date;
 
 /**
@@ -11,48 +12,34 @@ public class Enrollment {
     private int studentId;
     private int courseId;
     private Date enrollmentDate;
-    private String status; // ACTIVE, COMPLETED, CANCELLED
+    private String status;
 
-    // Default constructor
     public Enrollment() {
         this.enrollmentDate = new Date();
         this.status = "ACTIVE";
     }
 
-    // Parameterized constructor
-    public Enrollment(int id, int studentId, int courseId, Date enrollmentDate, String status) {
-        this.id = id;
-        this.studentId = studentId;
-        this.courseId = courseId;
-        this.enrollmentDate = enrollmentDate;
-        this.status = status;
-    }
-
-    // Constructor overloading - without status (defaults to ACTIVE)
-    public Enrollment(int id, int studentId, int courseId, Date enrollmentDate) {
-        this.id = id;
-        this.studentId = studentId;
-        this.courseId = courseId;
-        this.enrollmentDate = enrollmentDate;
-        this.status = "ACTIVE";
-    }
-
-    // Constructor overloading - basic info only
-    public Enrollment(int id, int studentId, int courseId) {
-        this.id = id;
+    public Enrollment(int studentId, int courseId) {
         this.studentId = studentId;
         this.courseId = courseId;
         this.enrollmentDate = new Date();
         this.status = "ACTIVE";
     }
 
-    // Getters and Setters (Encapsulation)
-    public int getId() {
-        return id;
+    private Enrollment(int id, int studentId, int courseId, Date enrollmentDate, String status) {
+        this.id = id;
+        this.studentId = studentId;
+        this.courseId = courseId;
+        setEnrollmentDate(enrollmentDate != null ? enrollmentDate : new Date());
+        setStatus(status);
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public static Enrollment create(int id, int studentId, int courseId, Date enrollmentDate, String status) {
+        return new Enrollment(id, studentId, courseId, enrollmentDate, status);
+    }
+
+    public int getId() {
+        return id;
     }
 
     public int getStudentId() {
@@ -72,11 +59,14 @@ public class Enrollment {
     }
 
     public Date getEnrollmentDate() {
-        return enrollmentDate;
+        return enrollmentDate != null ? new Date(enrollmentDate.getTime()) : null;
     }
 
     public void setEnrollmentDate(Date enrollmentDate) {
-        this.enrollmentDate = enrollmentDate;
+        if (enrollmentDate == null) {
+            throw new InvalidInputException("Enrollment date cannot be null.");
+        }
+        this.enrollmentDate = new Date(enrollmentDate.getTime());
     }
 
     public String getStatus() {
@@ -84,9 +74,13 @@ public class Enrollment {
     }
 
     public void setStatus(String status) {
-        if (status.equals("ACTIVE") || status.equals("COMPLETED") || status.equals("CANCELLED")) {
-            this.status = status;
+        if (status == null) {
+            throw new InvalidInputException("Status cannot be null.");
         }
+        if (!status.equals("ACTIVE") && !status.equals("COMPLETED") && !status.equals("CANCELLED")) {
+            throw new InvalidInputException("Status must be ACTIVE, COMPLETED, or CANCELLED.");
+        }
+        this.status = status;
     }
 
     @Override

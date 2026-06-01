@@ -35,22 +35,7 @@ echo Compiling LearnTrack...
 echo.
 
 REM Compile all Java files
-javac -d bin -sourcepath src ^
-    src\com\airtribe\learntrack\Main.java ^
-    src\com\airtribe\learntrack\entity\Person.java ^
-    src\com\airtribe\learntrack\entity\Student.java ^
-    src\com\airtribe\learntrack\entity\Course.java ^
-    src\com\airtribe\learntrack\entity\Enrollment.java ^
-    src\com\airtribe\learntrack\repository\StudentRepository.java ^
-    src\com\airtribe\learntrack\repository\CourseRepository.java ^
-    src\com\airtribe\learntrack\repository\EnrollmentRepository.java ^
-    src\com\airtribe\learntrack\service\StudentService.java ^
-    src\com\airtribe\learntrack\service\CourseService.java ^
-    src\com\airtribe\learntrack\service\EnrollmentService.java ^
-    src\com\airtribe\learntrack\exception\EntityNotFoundException.java ^
-    src\com\airtribe\learntrack\exception\InvalidInputException.java ^
-    src\com\airtribe\learntrack\util\IdGenerator.java ^
-    src\com\airtribe\learntrack\util\InputValidator.java
+javac -d bin -sourcepath src src\com\airtribe\learntrack\ui\Main.java
 
 if errorlevel 1 (
     echo.
@@ -63,7 +48,7 @@ if errorlevel 1 (
     echo Compilation successful!
     echo.
     echo To run the application, use:
-    echo java -cp bin com.airtribe.learntrack.Main
+    echo java -cp bin com.airtribe.learntrack.ui.Main
     echo.
 )
 

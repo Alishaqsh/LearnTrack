@@ -10,33 +10,30 @@ public class Person {
     private String lastName;
     private String email;
 
-    // Default constructor
     public Person() {
     }
 
-    // Parameterized constructor
-    public Person(int id, String firstName, String lastName, String email) {
+    protected Person(int id, String firstName, String lastName, String email) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
     }
 
-    // Constructor overloading - without email
-    public Person(int id, String firstName, String lastName) {
-        this.id = id;
+    protected Person(String firstName, String lastName, String email) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+    }
+
+    protected Person(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = "";
     }
 
-    // Getters and Setters (Encapsulation)
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getFirstName() {
@@ -63,9 +60,11 @@ public class Person {
         this.email = email;
     }
 
-    // Method to display person information
     public String getDisplayName() {
-        return firstName + " " + lastName;
+        String first = firstName != null ? firstName : "";
+        String last = lastName != null ? lastName : "";
+        String name = (first + " " + last).trim();
+        return name.isEmpty() ? "Unknown" : name;
     }
 
     @Override

@@ -1,71 +1,39 @@
 package com.airtribe.learntrack.repository;
 
 import com.airtribe.learntrack.entity.Enrollment;
+import com.airtribe.learntrack.exception.EntityNotFoundException;
+import com.airtribe.learntrack.exception.InvalidInputException;
 import java.util.ArrayList;
+import java.util.List;
 
-/**
- * EnrollmentRepository - Data Access Layer for Enrollment entity
- * Manages in-memory storage of Enrollment objects using ArrayList
- */
 public class EnrollmentRepository {
-    private ArrayList<Enrollment> enrollments;
+    private final ArrayList<Enrollment> enrollments = new ArrayList<>();
 
-    // Constructor
-    public EnrollmentRepository() {
-        this.enrollments = new ArrayList<>();
-    }
-
-    /**
-     * Add a new enrollment to the repository
-     * @param enrollment the enrollment to add
-     */
-    public void addEnrollment(Enrollment enrollment) {
+    public void addEnrollment(Enrollment enrollment) throws InvalidInputException {
+        for (Enrollment existing : enrollments) {
+            if (existing.getStudentId() == enrollment.getStudentId()
+                    && existing.getCourseId() == enrollment.getCourseId()
+                    && "ACTIVE".equals(existing.getStatus())) {
+                throw new InvalidInputException("Student is already actively enrolled in this course.");
+            }
+        }
         enrollments.add(enrollment);
     }
 
-    /**
-     * Remove an enrollment by ID
-     * @param enrollmentId the ID of enrollment to remove
-     * @return true if removed, false if not found
-     */
-    public boolean removeEnrollment(int enrollmentId) {
-        for (int i = 0; i < enrollments.size(); i++) {
-            if (enrollments.get(i).getId() == enrollmentId) {
-                enrollments.remove(i);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Find an enrollment by ID
-     * @param enrollmentId the ID to search for
-     * @return Enrollment if found, null otherwise
-     */
-    public Enrollment findEnrollmentById(int enrollmentId) {
+    public Enrollment findEnrollmentById(int enrollmentId) throws EntityNotFoundException {
         for (Enrollment enrollment : enrollments) {
             if (enrollment.getId() == enrollmentId) {
                 return enrollment;
             }
         }
-        return null;
+        throw new EntityNotFoundException("Enrollment with ID " + enrollmentId + " not found.");
     }
 
-    /**
-     * Get all enrollments
-     * @return ArrayList of all enrollments
-     */
-    public ArrayList<Enrollment> getAllEnrollments() {
-        return enrollments;
+    public List<Enrollment> getAllEnrollments() {
+        return new ArrayList<>(enrollments);
     }
 
-    /**
-     * Get all enrollments for a specific student
-     * @param studentId the student ID
-     * @return ArrayList of enrollments for that student
-     */
-    public ArrayList<Enrollment> getEnrollmentsByStudent(int studentId) {
+    public List<Enrollment> getEnrollmentsByStudent(int studentId) {
         ArrayList<Enrollment> studentEnrollments = new ArrayList<>();
         for (Enrollment enrollment : enrollments) {
             if (enrollment.getStudentId() == studentId) {
@@ -75,12 +43,7 @@ public class EnrollmentRepository {
         return studentEnrollments;
     }
 
-    /**
-     * Get all enrollments for a specific course
-     * @param courseId the course ID
-     * @return ArrayList of enrollments for that course
-     */
-    public ArrayList<Enrollment> getEnrollmentsByCourse(int courseId) {
+    public List<Enrollment> getEnrollmentsByCourse(int courseId) {
         ArrayList<Enrollment> courseEnrollments = new ArrayList<>();
         for (Enrollment enrollment : enrollments) {
             if (enrollment.getCourseId() == courseId) {
@@ -90,32 +53,18 @@ public class EnrollmentRepository {
         return courseEnrollments;
     }
 
-    /**
-     * Update an existing enrollment
-     * @param enrollment the updated enrollment object
-     * @return true if updated, false if not found
-     */
-    public boolean updateEnrollment(Enrollment enrollment) {
-        for (int i = 0; i < enrollments.size(); i++) {
-            if (enrollments.get(i).getId() == enrollment.getId()) {
-                enrollments.set(i, enrollment);
-                return true;
-            }
-        }
-        return false;
+    public void updateEnrollment(Enrollment enrollment) throws EntityNotFoundException {
+        Enrollment existing = findEnrollmentById(enrollment.getId());
+        existing.setStudentId(enrollment.getStudentId());
+        existing.setCourseId(enrollment.getCourseId());
+        existing.setEnrollmentDate(enrollment.getEnrollmentDate());
+        existing.setStatus(enrollment.getStatus());
     }
 
-    /**
-     * Get count of all enrollments
-     * @return number of enrollments
-     */
     public int getEnrollmentCount() {
         return enrollments.size();
     }
 
-    /**
-     * Clear all enrollments (useful for testing)
-     */
     public void clear() {
         enrollments.clear();
     }

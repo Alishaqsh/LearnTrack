@@ -1,91 +1,42 @@
 package com.airtribe.learntrack.repository;
 
 import com.airtribe.learntrack.entity.Course;
+import com.airtribe.learntrack.exception.EntityNotFoundException;
 import java.util.ArrayList;
+import java.util.List;
 
-/**
- * CourseRepository - Data Access Layer for Course entity
- * Manages in-memory storage of Course objects using ArrayList
- */
 public class CourseRepository {
-    private ArrayList<Course> courses;
+    private final ArrayList<Course> courses = new ArrayList<>();
 
-    // Constructor
-    public CourseRepository() {
-        this.courses = new ArrayList<>();
-    }
-
-    /**
-     * Add a new course to the repository
-     * @param course the course to add
-     */
     public void addCourse(Course course) {
         courses.add(course);
     }
 
-    /**
-     * Remove a course by ID
-     * @param courseId the ID of course to remove
-     * @return true if removed, false if not found
-     */
-    public boolean removeCourse(int courseId) {
-        for (int i = 0; i < courses.size(); i++) {
-            if (courses.get(i).getId() == courseId) {
-                courses.remove(i);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Find a course by ID
-     * @param courseId the ID to search for
-     * @return Course if found, null otherwise
-     */
-    public Course findCourseById(int courseId) {
+    public Course findCourseById(int courseId) throws EntityNotFoundException {
         for (Course course : courses) {
             if (course.getId() == courseId) {
                 return course;
             }
         }
-        return null;
+        throw new EntityNotFoundException("Course with ID " + courseId + " not found.");
     }
 
-    /**
-     * Get all courses
-     * @return ArrayList of all courses
-     */
-    public ArrayList<Course> getAllCourses() {
-        return courses;
+    public List<Course> getAllCourses() {
+        return new ArrayList<>(courses);
     }
 
-    /**
-     * Update an existing course
-     * @param course the updated course object
-     * @return true if updated, false if not found
-     */
-    public boolean updateCourse(Course course) {
-        for (int i = 0; i < courses.size(); i++) {
-            if (courses.get(i).getId() == course.getId()) {
-                courses.set(i, course);
-                return true;
-            }
-        }
-        return false;
+    public void updateCourse(Course course) throws EntityNotFoundException {
+        Course existing = findCourseById(course.getId());
+        existing.setCourseName(course.getCourseName());
+        existing.setDescription(course.getDescription());
+        existing.setDurationInWeeks(course.getDurationInWeeks());
+        existing.setActive(course.isActive());
     }
 
-    /**
-     * Get count of all courses
-     * @return number of courses
-     */
     public int getCourseCount() {
         return courses.size();
     }
 
-    /**
-     * Clear all courses (useful for testing)
-     */
     public void clear() {
         courses.clear();
     }
