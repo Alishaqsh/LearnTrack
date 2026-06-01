@@ -12,21 +12,21 @@ public class Enrollment {
     private int studentId;
     private int courseId;
     private Date enrollmentDate;
-    private String status;
+    private EnrollmentStatus status;
 
     public Enrollment() {
         this.enrollmentDate = new Date();
-        this.status = "ACTIVE";
+        this.status = EnrollmentStatus.ACTIVE;
     }
 
     public Enrollment(int studentId, int courseId) {
         this.studentId = studentId;
         this.courseId = courseId;
         this.enrollmentDate = new Date();
-        this.status = "ACTIVE";
+        this.status = EnrollmentStatus.ACTIVE;
     }
 
-    private Enrollment(int id, int studentId, int courseId, Date enrollmentDate, String status) {
+    private Enrollment(int id, int studentId, int courseId, Date enrollmentDate, EnrollmentStatus status) {
         this.id = id;
         this.studentId = studentId;
         this.courseId = courseId;
@@ -34,7 +34,7 @@ public class Enrollment {
         setStatus(status);
     }
 
-    public static Enrollment create(int id, int studentId, int courseId, Date enrollmentDate, String status) {
+    public static Enrollment create(int id, int studentId, int courseId, Date enrollmentDate, EnrollmentStatus status) {
         return new Enrollment(id, studentId, courseId, enrollmentDate, status);
     }
 
@@ -69,16 +69,13 @@ public class Enrollment {
         this.enrollmentDate = new Date(enrollmentDate.getTime());
     }
 
-    public String getStatus() {
+    public EnrollmentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(EnrollmentStatus status) {
         if (status == null) {
             throw new InvalidInputException("Status cannot be null.");
-        }
-        if (!status.equals("ACTIVE") && !status.equals("COMPLETED") && !status.equals("CANCELLED")) {
-            throw new InvalidInputException("Status must be ACTIVE, COMPLETED, or CANCELLED.");
         }
         this.status = status;
     }

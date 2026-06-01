@@ -1,6 +1,7 @@
 package com.airtribe.learntrack.repository;
 
 import com.airtribe.learntrack.entity.Enrollment;
+import com.airtribe.learntrack.entity.EnrollmentStatus;
 import com.airtribe.learntrack.exception.EntityNotFoundException;
 import com.airtribe.learntrack.exception.InvalidInputException;
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ public class EnrollmentRepository {
         for (Enrollment existing : enrollments) {
             if (existing.getStudentId() == enrollment.getStudentId()
                     && existing.getCourseId() == enrollment.getCourseId()
-                    && "ACTIVE".equals(existing.getStatus())) {
+                    && EnrollmentStatus.ACTIVE == existing.getStatus()) {
                 throw new InvalidInputException("Student is already actively enrolled in this course.");
             }
         }
