@@ -1,6 +1,8 @@
 package com.airtribe.learntrack.service;
 
+import com.airtribe.learntrack.entity.Course;
 import com.airtribe.learntrack.entity.Enrollment;
+import com.airtribe.learntrack.entity.Student;
 import com.airtribe.learntrack.exception.EntityNotFoundException;
 import com.airtribe.learntrack.exception.InvalidInputException;
 import com.airtribe.learntrack.repository.EnrollmentRepository;
@@ -44,13 +46,21 @@ public class EnrollmentService {
         return new ArrayList<>(enrollmentRepository.getAllEnrollments());
     }
 
-    public ArrayList<Enrollment> getEnrollmentsByStudent(int studentId) throws EntityNotFoundException {
-        studentService.getStudentById(studentId);
+    public ArrayList<Enrollment> getEnrollmentsByStudent(int studentId)
+            throws EntityNotFoundException, InvalidInputException {
+        Student student = studentService.getStudentById(studentId);
+        if (!student.isActive()) {
+            throw new InvalidInputException("Student with ID " + studentId + " is not active.");
+        }
         return new ArrayList<>(enrollmentRepository.getEnrollmentsByStudent(studentId));
     }
 
-    public ArrayList<Enrollment> getEnrollmentsByCourse(int courseId) throws EntityNotFoundException {
-        courseService.getCourseById(courseId);
+    public ArrayList<Enrollment> getEnrollmentsByCourse(int courseId)
+            throws EntityNotFoundException, InvalidInputException {
+        Course course = courseService.getCourseById(courseId);
+        if (!course.isActive()) {
+            throw new InvalidInputException("Course with ID " + courseId + " is not active.");
+        }
         return new ArrayList<>(enrollmentRepository.getEnrollmentsByCourse(courseId));
     }
 

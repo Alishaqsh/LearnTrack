@@ -43,8 +43,8 @@ public class InputValidator {
      * @throws InvalidInputException if email format is invalid
      */
     public static void validateEmail(String email) throws InvalidInputException {
-        if (!email.contains("@") || !email.contains(".")) {
-            throw new InvalidInputException("Please enter a valid email address.");
+        if (email == null || !email.matches("^[a-zA-Z0-9._%+\\-]+@[a-zA-Z0-9.\\-]+\\.[a-zA-Z]{2,}$")) {
+            throw new InvalidInputException("Please enter a valid email address (e.g. user@example.com).");
         }
     }
 
@@ -57,7 +57,11 @@ public class InputValidator {
      */
     public static int parseInteger(String input, String fieldName) throws InvalidInputException {
         try {
-            return Integer.parseInt(input);
+            int value = Integer.parseInt(input);
+            if (value <= 0) {
+                throw new InvalidInputException(fieldName + " must be a positive number.");
+            }
+            return value;
         } catch (NumberFormatException e) {
             throw new InvalidInputException(fieldName + " must be a valid number.");
         }
